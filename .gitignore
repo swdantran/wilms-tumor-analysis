@@ -1,0 +1,16 @@
+# R session files
+.Rhistory
+.Rapp.history
+.RData
+.Rproj.user/
+*.RData
+
+# macOS
+.DS_Store
+
+# Logs and backups
+*.log
+*.bak
+
+# Automatically generated plots
+Rplots.pdf

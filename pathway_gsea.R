@@ -15,64 +15,41 @@ library(scales)
 
 ############################## GSEA GO terms ##########################
 
-gene_list_go.prim <- resLFC_clean.prim$log2FoldChange
-gene_list_go.prim
-names(gene_list_go.prim) <- rownames(resLFC_clean.prim)
-gene_list_go.prim <- na.omit(gene_list_go.prim)
-gene_list_go.prim = sort(gene_list_go.prim, decreasing = TRUE)
-
-gene_list_go.recu <- resLFC_clean.recu$log2FoldChange
-gene_list_go.recu
-names(gene_list_go.recu) <- rownames(resLFC_clean.recu)
-gene_list_go.recu <- na.omit(gene_list_go.recu)
-gene_list_go.recu = sort(gene_list_go.recu, decreasing = TRUE)
+gene_list_go <- resLFC_clean$log2FoldChange
+gene_list_go
+names(gene_list_go) <- rownames(resLFC_clean)
+gene_list_go <- na.omit(gene_list_go)
+gene_list_go = sort(gene_list_go, decreasing = TRUE)
 
 # biological processes
-gse_bp.prim <- gseGO(gene_list_go.prim, ont = "BP", keyType = "ENSEMBL",
+gse_bp <- gseGO(gene_list_go, ont = "BP", keyType = "ENSEMBL",
                 OrgDb = "org.Hs.eg.db", eps = 1e-300, nPerm = 10000)
-gse_bp.recu <- gseGO(gene_list_go.recu, ont = "BP", keyType = "ENSEMBL",
-                     OrgDb = "org.Hs.eg.db", eps = 1e-300, nPerm = 10000)
 # molecular functions
-gse_mf.prim <- gseGO(gene_list_go.prim, ont = "MF", keyType = "ENSEMBL",
+gse_mf <- gseGO(gene_list_go, ont = "MF", keyType = "ENSEMBL",
                 OrgDb = "org.Hs.eg.db", eps = 1e-300, nPerm = 10000)
-gse_mf.recu <- gseGO(gene_list_go.recu, ont = "MF", keyType = "ENSEMBL",
-                     OrgDb = "org.Hs.eg.db", eps = 1e-300, nPerm = 10000)
 # cellular components
-gse_cc.prim <- gseGO(gene_list_go.prim, ont = "CC", keyType = "ENSEMBL",
+gse_cc <- gseGO(gene_list_go, ont = "CC", keyType = "ENSEMBL",
                 OrgDb = "org.Hs.eg.db", eps = 1e-300, nPerm = 10000)
-gse_cc.recu <- gseGO(gene_list_go.recu, ont = "CC", keyType = "ENSEMBL",
-                     OrgDb = "org.Hs.eg.db", eps = 1e-300, nPerm = 10000)
+
 # gse_bp_simp <- simplify(gse_bp)
 # View(as.data.frame(gse_bp_simp)
 
 
-gse_bp_df.prim <- as.data.frame(gse_bp.prim)
-gse_bp_df.prim <- gse_bp_df.prim[order(gse_bp_df.prim$NES, decreasing=TRUE), ]
-gse_bp_df.prim$genes <- fetch_gene_symbols(gse_bp_df.prim$core_enrichment, "ENSEMBL")
+gse_bp_df <- as.data.frame(gse_bp)
+gse_bp_df <- gse_bp_df[order(gse_bp_df$NES, decreasing=TRUE), ]
+gse_bp_df$genes <- fetch_gene_symbols(gse_bp_df$core_enrichment, "ENSEMBL")
 
-gse_bp_df.recu <- as.data.frame(gse_bp.recu)
-gse_bp_df.recu <- gse_bp_df.recu[order(gse_bp_df.recu$NES, decreasing=TRUE), ]
-gse_bp_df.recu$genes <- fetch_gene_symbols(gse_bp_df.recu$core_enrichment, "ENSEMBL")
+gse_mf_df <- as.data.frame(gse_mf)
+gse_mf_df <- gse_mf_df[order(gse_mf_df$NES, decreasing=TRUE), ]
+gse_mf_df$genes <- fetch_gene_symbols(gse_mf_df$core_enrichment, "ENSEMBL")
 
-gse_mf_df.prim <- as.data.frame(gse_mf.prim)
-gse_mf_df.prim <- gse_mf_df.prim[order(gse_mf_df.prim$NES, decreasing=TRUE), ]
-gse_mf_df.prim$genes <- fetch_gene_symbols(gse_mf_df.prim$core_enrichment, "ENSEMBL")
-
-gse_mf_df.recu <- as.data.frame(gse_mf.recu)
-gse_mf_df.recu <- gse_mf_df.recu[order(gse_mf_df.recu$NES, decreasing=TRUE), ]
-gse_mf_df.recu$genes <- fetch_gene_symbols(gse_mf_df.recu$core_enrichment, "ENSEMBL")
-
-gse_cc_df.prim <- as.data.frame(gse_cc.prim)
-gse_cc_df.prim <- gse_cc_df.prim[order(gse_cc_df.prim$NES, decreasing=TRUE), ]
-gse_cc_df.prim$genes <- fetch_gene_symbols(gse_cc_df.prim$core_enrichment, "ENSEMBL")
-
-gse_cc_df.recu <- as.data.frame(gse_cc.recu)
-gse_cc_df.recu <- gse_cc_df.recu[order(gse_cc_df.recu$NES, decreasing=TRUE), ]
-gse_cc_df.recu$genes <- fetch_gene_symbols(gse_cc_df.recu$core_enrichment, "ENSEMBL")
+gse_cc_df <- as.data.frame(gse_cc)
+gse_cc_df <- gse_cc_df[order(gse_cc_df$NES, decreasing=TRUE), ]
+gse_cc_df$genes <- fetch_gene_symbols(gse_cc_df$core_enrichment, "ENSEMBL")
 
 
 # GSEA plot
-gseaplot2(gse_bp.prim, 
+gseaplot2(gse_bp, 
           geneSetID = c("GO:0000819"),
           color = "red",
           pvalue_table = TRUE)
@@ -140,17 +117,12 @@ ggplot(gse_bp_df_sel, aes(x = NES, y = reorder(Description, NES, decreasing = F)
 
 ############################## GSEA KEGG ##############################
 
-gene_list_kegg.prim <- resLFC_clean.prim$log2FoldChange
-names(gene_list_kegg.prim) <- resLFC_clean.prim$entrez
-gene_list_kegg.prim <- na.omit(gene_list_kegg.prim)
-gene_list_kegg.prim = sort(gene_list_kegg.prim, decreasing = TRUE)
+gene_list_kegg <- deseq_result_clean$log2FoldChange
+names(gene_list_kegg) <- deseq_result_clean$entrez
+gene_list_kegg <- na.omit(gene_list_kegg)
+gene_list_kegg = sort(gene_list_kegg, decreasing = TRUE)
 
-gene_list_kegg.recu <- resLFC_clean.recu$log2FoldChange
-names(gene_list_kegg.recu) <- resLFC_clean.recu$entrez
-gene_list_kegg.recu <- na.omit(gene_list_kegg.recu)
-gene_list_kegg.recu = sort(gene_list_kegg.recu, decreasing = TRUE)
-
-gse_kegg.prim <- gseKEGG(gene_list_kegg.prim,
+gse_kegg <- gseKEGG(gene_list_kegg,
                     organism = "hsa",
                     keyType = "ncbi-geneid",
                     nPerm = 10000,
@@ -159,20 +131,8 @@ gse_kegg.prim <- gseKEGG(gene_list_kegg.prim,
                     maxGSSize    = 500,
                     pvalueCutoff = 0.1)
 
-gse_kegg_df.prim <- gse_kegg.prim@result
-View(gse_kegg_df.prim)
-
-gse_kegg.recu <- gseKEGG(gene_list_kegg.recu,
-                         organism = "hsa",
-                         keyType = "ncbi-geneid",
-                         nPerm = 10000,
-                         eps = 1e-300,
-                         minGSSize    = 1,
-                         maxGSSize    = 500,
-                         pvalueCutoff = 0.1)
-
-gse_kegg_df.recu <- gse_kegg.recu@result
-View(gse_kegg_df.recu)
+gse_kegg_df <- gse_kegg@result
+View(gse_kegg_df)
 
 # GSEA plot
 gseaplot2(gse_kegg, 
@@ -181,7 +141,7 @@ gseaplot2(gse_kegg,
           #pvalue_table = T,
           base_size = 14,
           subplots = 1:2
-)
+          )
 
 # (OPTIONAL) select several pathways for visualization
 gse_kegg_df_sel <- gse_kegg_df[c("hsa04066", "hsa04820", "hsa04610", "hsa04974","hsa04926"),]
@@ -204,12 +164,12 @@ cnetplot(gse_kegg,
          color.params = list(category = "grey60", #"deepskyblue4", 
                              edge = T,
                              foldChange = gene_list_kegg_heat #"red3"
-         ),
+                             ),
          hilight.params = list(category = NULL, # select pathway name here for highlight
                                alpha_hilight = 2, 
                                alpha_no_hilight = 0.5),
          cex.params = list(gene_node = 4)
-) +
+         ) +
   theme(
     legend.text = element_text(colour="black", size=13), # face = "bold"
     legend.title = element_text(colour="black", size=13, face = "bold"), # , vjust = 0.9
@@ -223,7 +183,7 @@ cnetplot(gse_kegg,
 heatplot(gse_kegg, #foldChange = gene_list_kegg_heat,
          showCategory = c("HIF-1 signaling pathway",
                           "Glycolysis / Gluconeogenesis")
-) +
+        ) +
   theme(
     panel.grid.major = element_blank(),  
     panel.grid.minor = element_blank(),  
