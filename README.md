@@ -1,4 +1,3 @@
-cat > README.md <<'EOF'
 # Wilms Tumor RNA-seq Analysis
 
 R scripts for differential gene expression and pathway enrichment analysis of Wilms tumor RNA-seq data.
